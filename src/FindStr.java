@@ -46,7 +46,8 @@ public class FindStr {
                         if (positionsv != -1) result.add(convert(linecount, positionsv++));
                         else break;
                     }
-                    linecount++; //increase line index
+                    linecount++;
+                    //increase line index
                 }
                 //READ_TEXT += line + '\n';
                 buffer = new byte[BUFFER_SIZE]; //recovery buffer
