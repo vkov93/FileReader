@@ -1,12 +1,17 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.ArrayList;
 
 public class FindStr {
-    public static void main(String[] args){
+    private static int BUFFER_SIZE = 128;
 
-        if(args.length != 2){
+    private static String convert(int line, int pos){
+        return "[" + line + "," + pos + "]";
+    }
+
+    public static void main(String[] args) {
+        if (args.length != 2) {
             System.out.println("Неверное число аргументов! " +
                     "\nИспользование: file_name substr;" +
                     "\nПример: examplefile.txt bananas - " +
@@ -14,48 +19,46 @@ public class FindStr {
                     "\n в формате \"Вхождение на строке \" + line + \" на позиции \" + pos");
             return;
         }
-        File file = new File(args[0]);
-        String substr = args[1];
-        Scanner sc = null;
+        //init (maybe drop this into initialisation block???)
+        int positionsv;
         int linecount = 0;
-        int i = 0;
+        byte[] buffer = new byte[BUFFER_SIZE];
+        byte[] check = new byte[BUFFER_SIZE];
 
-        class Info{
-            int pos;
-            int line;
-            Info(int pos, int line){
-                this.pos = pos;
-                this.line = line;
-            }
+        ArrayList<String> result = new ArrayList<String>();
 
-            @Override
-            public String toString() {
-                String str = "Вхождение на строке " + line + " на позиции " + pos;
-                return str;
-            }
-        }
+        String line;
+        String substr = args[1];
+        String[] subStrings;
+        //String READ_TEXT = "";  //instrument for reading text
 
-        ArrayList<Info> result = new ArrayList<Info>();
+        try(FileInputStream fr = new FileInputStream(args[0])){
+            for(;;) {
 
-        try {
-            sc = new Scanner(file);
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                System.out.println(line);
-                if(line.indexOf(substr) != -1){
-                    result.add(new Info(line.indexOf(substr), linecount));
+                fr.read(buffer, 0 , BUFFER_SIZE);
+                if(Arrays.equals(buffer, check)) break; //when read(buffer) is empty (EOF) - break all
+                line = new String(buffer);
+                subStrings = line.split("\n"); //split line
+                for(int i = 0; i < subStrings.length; i++) {
+                    positionsv = 0;  //find all substrings in line
+                    while (positionsv != -1) {
+                        positionsv = subStrings[i].indexOf(substr, positionsv);
+                        if (positionsv != -1) result.add(convert(linecount, positionsv++));
+                        else break;
+                    }
+                    linecount++; //increase line index
                 }
-                linecount++;
+                //READ_TEXT += line + '\n';
+                buffer = new byte[BUFFER_SIZE]; //recovery buffer
+                if(subStrings.length == 1) linecount--;
             }
-        }
-        catch (FileNotFoundException e) {
+
+            //System.out.println(READ_TEXT);
+            System.out.print(result); //print ArrayList with indexes
+        }catch (IOException e){
             e.printStackTrace();
         }
-        finally {
-            sc.close();
 
-            System.out.println(result);
-        }
-    }
+    } //main
+} //class
 
-}
