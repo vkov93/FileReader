@@ -1,6 +1,6 @@
 # FileReader
-Программа для поиска в файле всех вхождений указанной подстроки
-
+Программа для поиска в файле всех вхождений указанной подстроки 
+(не используя класс Scanner, т.к. слишком длинная строка может вызвать переполнение кучи)
 
 # Результат работы программы с аргументами test.txt Pelevin:
 Victor Olegovich Pelevin was born in Moscow on 22 November 1962 to Zinaida Semenovna Efremova, an English teacher, and Oleg Anatolyevich Pelevin, a teacher at the military department of Bauman University. He lived on Tverskoy Boulevard in Moscow, later moving to Chertanovo. In 1979 Pelevin graduated from an elite high school with a special English program located on Stanislavskogo Street in the centre of Moscow, now Kaptsov Gymnasium #1520.
